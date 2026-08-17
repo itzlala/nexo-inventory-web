@@ -1,0 +1,51 @@
+<main class="login-page">
+  <section class="login-story" aria-label="Presentación del sistema">
+    <div class="story-content">
+      <a class="brand" href="#"><span><mat-icon>inventory_2</mat-icon></span><strong>Nexo Inventory</strong></a>
+      <p class="eyebrow">CONTROL QUE IMPULSA DECISIONES</p>
+      <h1>Tu inventario,<br><em>siempre bajo control.</em></h1>
+      <p class="intro">Centraliza activos, responsables y ubicaciones en una experiencia clara, segura y preparada para crecer.</p>
+      <div class="feature-row">
+        <span><mat-icon>verified_user</mat-icon>Acceso protegido</span>
+        <span><mat-icon>insights</mat-icon>Visibilidad inmediata</span>
+      </div>
+    </div>
+    <div class="orb orb-one"></div><div class="orb orb-two"></div>
+  </section>
+
+  <section class="login-panel">
+    <div class="login-card">
+      <span class="mobile-logo"><mat-icon>inventory_2</mat-icon></span>
+      <p class="eyebrow">BIENVENIDO DE NUEVO</p>
+      <h2>Inicia sesión</h2>
+      <p class="helper">Ingresa tus credenciales para continuar al panel de control.</p>
+
+      <form [formGroup]="loginForm" (ngSubmit)="login()">
+        <mat-form-field appearance="outline">
+          <mat-label>Usuario</mat-label>
+          <mat-icon matPrefix>person_outline</mat-icon>
+          <input matInput formControlName="usuario" autocomplete="username" placeholder="usuario">
+          <mat-error>Ingresa tu usuario.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Contraseña</mat-label>
+          <mat-icon matPrefix>lock_outline</mat-icon>
+          <input matInput formControlName="contrasenia" [type]="hidePassword ? 'password' : 'text'" autocomplete="current-password">
+          <button mat-icon-button matSuffix type="button" [attr.aria-label]="hidePassword ? 'Mostrar contraseña' : 'Ocultar contraseña'" (click)="hidePassword = !hidePassword">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error>Ingresa una contraseña válida.</mat-error>
+        </mat-form-field>
+
+        <div class="error-box" role="alert" *ngIf="errorMessage"><mat-icon>error_outline</mat-icon>{{ errorMessage }}</div>
+        <button class="login-button" type="submit" [disabled]="loading">
+          <mat-spinner *ngIf="loading" diameter="22"></mat-spinner>
+          <span *ngIf="!loading">Entrar al sistema</span>
+          <mat-icon *ngIf="!loading">arrow_forward</mat-icon>
+        </button>
+      </form>
+      <p class="security-note"><mat-icon>lock</mat-icon>Sesión protegida mediante token JWT</p>
+    </div>
+  </section>
+</main>

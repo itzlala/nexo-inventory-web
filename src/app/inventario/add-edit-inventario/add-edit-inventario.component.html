@@ -1,0 +1,38 @@
+<header class="dialog-header">
+  <div><p>{{ isEditing ? 'ACTUALIZAR REGISTRO' : 'NUEVO REGISTRO' }}</p><h2>{{ isEditing ? 'Editar activo' : 'Registrar activo' }}</h2><span>Completa la información para mantener la trazabilidad del inventario.</span></div>
+  <button mat-icon-button type="button" aria-label="Cerrar" mat-dialog-close><mat-icon>close</mat-icon></button>
+</header>
+
+<form [formGroup]="assetForm" (ngSubmit)="save()">
+  <mat-dialog-content>
+    <h3>Identificación</h3>
+    <div class="form-grid">
+      <mat-form-field appearance="outline"><mat-label>Folio</mat-label><input matInput formControlName="Folio" placeholder="INV-0001"><mat-error>El folio es obligatorio.</mat-error></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Nombre del activo</mat-label><input matInput formControlName="NomProd" placeholder="Laptop ejecutiva"><mat-error>El nombre es obligatorio.</mat-error></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Tipo</mat-label><input matInput formControlName="Tipo" placeholder="Equipo de cómputo"><mat-error>El tipo es obligatorio.</mat-error></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Estado</mat-label><mat-select formControlName="Estatus"><mat-option *ngFor="let status of statuses" [value]="status">{{ status }}</mat-option></mat-select></mat-form-field>
+    </div>
+
+    <h3>Información técnica</h3>
+    <div class="form-grid">
+      <mat-form-field appearance="outline"><mat-label>Marca</mat-label><input matInput formControlName="Marca"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Modelo</mat-label><input matInput formControlName="Modelo"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Número de serie</mat-label><input matInput formControlName="Nserie"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Costo</mat-label><span matPrefix>$&nbsp;</span><input matInput formControlName="Costo" inputmode="decimal"><mat-error>El costo es obligatorio.</mat-error></mat-form-field>
+      <mat-form-field appearance="outline" class="full"><mat-label>Descripción física</mat-label><textarea matInput formControlName="DescFis" rows="2"></textarea></mat-form-field>
+      <mat-form-field appearance="outline" class="full"><mat-label>Descripción técnica</mat-label><textarea matInput formControlName="DescTec" rows="2"></textarea></mat-form-field>
+    </div>
+
+    <h3>Asignación</h3>
+    <div class="form-grid">
+      <mat-form-field appearance="outline"><mat-label>Ubicación</mat-label><input matInput formControlName="Lugar" placeholder="Oficina central"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Responsable</mat-label><input matInput formControlName="Asignacion" placeholder="Nombre del colaborador"></mat-form-field>
+      <mat-form-field appearance="outline" class="full"><mat-label>Observaciones</mat-label><textarea matInput formControlName="Observaciones" rows="2"></textarea></mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>Cancelar</button>
+    <button class="save-button" type="submit" [disabled]="saving"><mat-spinner *ngIf="saving" diameter="19"></mat-spinner><mat-icon *ngIf="!saving">save</mat-icon>{{ saving ? 'Guardando...' : 'Guardar activo' }}</button>
+  </mat-dialog-actions>
+</form>

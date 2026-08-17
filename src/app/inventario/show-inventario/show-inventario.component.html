@@ -1,0 +1,38 @@
+<div class="page-heading">
+  <div><p class="eyebrow">GESTIÓN DE ACTIVOS</p><h1>Inventario</h1><p>Administra el ciclo de vida, ubicación y responsable de cada activo.</p></div>
+  <button class="primary-action" (click)="openDialog()"><mat-icon>add</mat-icon>Nuevo activo</button>
+</div>
+
+<section class="surface inventory-card">
+  <div class="filters">
+    <div class="search"><mat-icon>search</mat-icon><input #searchInput type="search" placeholder="Buscar por folio, producto, serie..." (input)="applySearch(searchInput.value)" aria-label="Buscar inventario"></div>
+    <mat-form-field appearance="outline" class="status-filter">
+      <mat-label>Todos los estados</mat-label>
+      <mat-select [value]="selectedStatus" (selectionChange)="filterStatus($event.value)">
+        <mat-option value="">Todos los estados</mat-option>
+        <mat-option *ngFor="let status of statuses" [value]="status">{{ status }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <span class="result-count">{{ dataSource.filteredData.length }} activos</span>
+  </div>
+
+  <div class="loading" *ngIf="loading"><mat-spinner diameter="38"></mat-spinner><span>Cargando inventario...</span></div>
+  <div class="table-scroll" [hidden]="loading || !dataSource.filteredData.length">
+    <table mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="Folio"><th mat-header-cell *matHeaderCellDef mat-sort-header>Folio</th><td mat-cell *matCellDef="let item"><strong class="folio">{{ item.Folio }}</strong><small>{{ item.Nserie || 'Sin serie' }}</small></td></ng-container>
+      <ng-container matColumnDef="NomProd"><th mat-header-cell *matHeaderCellDef mat-sort-header>Activo</th><td mat-cell *matCellDef="let item"><strong>{{ item.NomProd || item.DescFis }}</strong><small>{{ item.Modelo }}</small></td></ng-container>
+      <ng-container matColumnDef="Tipo"><th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo</th><td mat-cell *matCellDef="let item">{{ item.Tipo }}</td></ng-container>
+      <ng-container matColumnDef="Estatus"><th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th><td mat-cell *matCellDef="let item"><span class="status-chip" [attr.data-status]="item.Estatus?.toLowerCase()">{{ item.Estatus }}</span></td></ng-container>
+      <ng-container matColumnDef="Marca"><th mat-header-cell *matHeaderCellDef mat-sort-header>Marca</th><td mat-cell *matCellDef="let item">{{ item.Marca }}</td></ng-container>
+      <ng-container matColumnDef="Lugar"><th mat-header-cell *matHeaderCellDef mat-sort-header>Ubicación</th><td mat-cell *matCellDef="let item"><span class="with-icon"><mat-icon>location_on</mat-icon>{{ item.Lugar || 'Sin asignar' }}</span></td></ng-container>
+      <ng-container matColumnDef="Asignacion"><th mat-header-cell *matHeaderCellDef mat-sort-header>Responsable</th><td mat-cell *matCellDef="let item">{{ item.Asignacion || '—' }}</td></ng-container>
+      <ng-container matColumnDef="Costo"><th mat-header-cell *matHeaderCellDef mat-sort-header>Costo</th><td mat-cell *matCellDef="let item">{{ (+item.Costo || 0) | currency:'MXN':'symbol-narrow':'1.0-0' }}</td></ng-container>
+      <ng-container matColumnDef="acciones"><th mat-header-cell *matHeaderCellDef><span class="visually-hidden">Acciones</span></th><td mat-cell *matCellDef="let item" class="actions"><button mat-icon-button matTooltip="Editar activo" (click)="openDialog(item)"><mat-icon>edit</mat-icon></button><button mat-icon-button matTooltip="Eliminar activo" class="delete" (click)="delete(item)"><mat-icon>delete_outline</mat-icon></button></td></ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && !dataSource.filteredData.length"><mat-icon>inventory_2</mat-icon><h3>No encontramos activos</h3><p>Ajusta los filtros o registra un nuevo activo.</p></div>
+  <mat-paginator [pageSizeOptions]="[8, 15, 30]" [pageSize]="8" showFirstLastButtons></mat-paginator>
+</section>

@@ -1,0 +1,9 @@
+.dialog-header { padding: 24px 26px 17px; display: flex; justify-content: space-between; gap: 18px; border-bottom: 1px solid var(--line); }
+.dialog-header p { margin: 0 0 5px; color: var(--brand); font-size: .68rem; letter-spacing: .15em; font-weight: 700; }
+.dialog-header h2 { margin: 0; font-size: 1.5rem; letter-spacing: -.03em; }.dialog-header span { display: block; margin-top: 5px; color: var(--muted); font-size: .84rem; }
+mat-dialog-content { max-height: 65vh; padding: 22px 26px !important; }
+h3 { margin: 10px 0 13px; color: #435068; font-size: .76rem; letter-spacing: .1em; text-transform: uppercase; }
+.form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 16px; }.full { grid-column: 1 / -1; } mat-form-field { width: 100%; }
+mat-dialog-actions { padding: 15px 26px 22px; border-top: 1px solid var(--line); }
+.save-button { min-width: 150px; height: 42px; border: 0; border-radius: 11px; display: flex; align-items: center; justify-content: center; gap: 7px; color: #fff; background: var(--brand); font-weight: 700; }.save-button:disabled { opacity: .65; }.save-button mat-spinner ::ng-deep circle { stroke: #fff; }
+@media (max-width: 620px) { .form-grid { grid-template-columns: 1fr; }.full { grid-column: auto; }.dialog-header { padding: 20px; } mat-dialog-content { padding: 18px 20px !important; } }
