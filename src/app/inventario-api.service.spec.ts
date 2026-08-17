@@ -1,12 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
 import { InventarioApiService } from './services/inventario-api.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('InventarioApiService', () => {
   let service: InventarioApiService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
     service = TestBed.inject(InventarioApiService);
   });
 

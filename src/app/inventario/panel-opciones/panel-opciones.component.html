@@ -1,18 +1,35 @@
-<div class="title">
-  <h1>SISTEMA</h1>
+<div class="page-heading">
+  <div><p class="eyebrow">PANEL GENERAL</p><h1>Resumen del inventario</h1><p>Consulta el estado de tus activos y las actividades más recientes.</p></div>
+  <a routerLink="/inventario" class="primary-action add-link"><mat-icon>add</mat-icon>Registrar activo</a>
 </div>
-<br>
-<div class="container-fluid ps-md-0 tamanio">
-    <div class="row g-0 h-100">
-        <div class="col-6 imagen1"></div>
-        <div class="col-6 imagen2"></div>
+
+<div class="notice" *ngIf="apiUnavailable"><mat-icon>cloud_off</mat-icon><span><strong>API sin conexión</strong> Inicia el backend para visualizar la información operativa.</span></div>
+
+<section class="stats-grid" [class.loading]="loading">
+  <article class="stat surface"><span class="stat-icon blue"><mat-icon>inventory_2</mat-icon></span><div><small>Total de activos</small><strong>{{ total }}</strong><span>Inventario registrado</span></div></article>
+  <article class="stat surface"><span class="stat-icon green"><mat-icon>check_circle</mat-icon></span><div><small>Disponibles</small><strong>{{ available }}</strong><span>Listos para asignar</span></div></article>
+  <article class="stat surface"><span class="stat-icon purple"><mat-icon>badge</mat-icon></span><div><small>Asignados</small><strong>{{ assigned }}</strong><span>En uso actualmente</span></div></article>
+  <article class="stat surface"><span class="stat-icon amber"><mat-icon>build_circle</mat-icon></span><div><small>Mantenimiento</small><strong>{{ maintenance }}</strong><span>Requieren atención</span></div></article>
+</section>
+
+<section class="dashboard-grid">
+  <article class="surface activity-card">
+    <div class="card-heading"><div><h2>Altas recientes</h2><p>Últimos activos incorporados</p></div><a routerLink="/inventario">Ver inventario <mat-icon>arrow_forward</mat-icon></a></div>
+    <div class="recent-list" *ngIf="recent.length; else noRecent">
+      <div class="recent-item" *ngFor="let item of recent">
+        <span class="asset-icon"><mat-icon>devices_other</mat-icon></span>
+        <div><strong>{{ item.NomProd || item.Tipo }}</strong><small>{{ item.Folio }} · {{ item.Marca }} {{ item.Modelo }}</small></div>
+        <span class="status" [class.available]="item.Estatus.toLowerCase() === 'disponible'">{{ item.Estatus }}</span>
+        <time>{{ item.FechaRegistro | date:'dd MMM' }}</time>
+      </div>
     </div>
-    <div class="row">
-        <div class="col-6 text-center">
-          <button mat-raised-button color="primary" (click)="BotonInventario()">CONTROL DE INVENTARIO</button>
-        </div>
-        <div class="col-6 text-center">
-          <button mat-raised-button color="primary" (click)="BotonUsuario()">CONTROL DE USUARIOS</button>
-        </div>
-    </div>
-</div>
+    <ng-template #noRecent><div class="empty-state"><mat-icon>inventory</mat-icon><p>Aún no hay activos registrados.</p></div></ng-template>
+  </article>
+
+  <aside class="surface quick-card">
+    <div class="card-heading"><div><h2>Accesos rápidos</h2><p>Tareas frecuentes</p></div></div>
+    <a routerLink="/inventario"><span><mat-icon>qr_code_2</mat-icon></span><div><strong>Administrar activos</strong><small>Altas, cambios y bajas</small></div><mat-icon>chevron_right</mat-icon></a>
+    <a routerLink="/usuarios"><span class="teal"><mat-icon>manage_accounts</mat-icon></span><div><strong>Directorio de usuarios</strong><small>{{ userCount }} personas registradas</small></div><mat-icon>chevron_right</mat-icon></a>
+    <div class="health"><span class="pulse"></span><div><strong>Estado del sistema</strong><small>{{ apiUnavailable ? 'Backend desconectado' : 'Servicios operando normalmente' }}</small></div></div>
+  </aside>
+</section>

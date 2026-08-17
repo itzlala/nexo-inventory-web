@@ -1,57 +1,20 @@
-<!-- <p>show-usuarios works!</p> -->
-<div class="title">
-    <h1>
-        <div class="" align="left">
-            <button mat-fab color="warn" aria-label="Example icon button with a home icon" (click)="redirigeAlHome()">
-            <mat-icon>home</mat-icon>
-            </button>
-        </div>
-        LISTA DE USUARIOS
-    </h1>
+<div class="page-heading">
+  <div><p class="eyebrow">DIRECTORIO INTERNO</p><h1>Usuarios</h1><p>Consulta las personas vinculadas con la operación del inventario.</p></div>
 </div>
-<br>
-<div class="container">
-    <table  mat-table [dataSource]="dataSource" class="mat-elevation-z5">
-        <ng-container matColumnDef="IdUsuario">
-            <th mat-header-cell *matHeaderCellDef> IdUsuario </th>
-            <td mat-cell *matCellDef="let element"> {{element.IdUsuario}} </td>
-        </ng-container>
-        <ng-container matColumnDef="DocumentoIdentidad">
-            <th mat-header-cell *matHeaderCellDef> DocumentoIdentidad </th>
-            <td mat-cell *matCellDef="let element"> {{element.DocumentoIdentidad}} </td>
-        </ng-container>
-        <ng-container matColumnDef="Nombres">
-            <th mat-header-cell *matHeaderCellDef> Nombres </th>
-            <td mat-cell *matCellDef="let element"> {{element.Nombres}} </td>
-        </ng-container>
-        <ng-container matColumnDef="Telefono">
-            <th mat-header-cell *matHeaderCellDef> Telefono </th>
-            <td mat-cell *matCellDef="let element"> {{element.Telefono}} </td>
-        </ng-container>
-        <ng-container matColumnDef="Correo">
-            <th mat-header-cell *matHeaderCellDef> Correo </th>
-            <td mat-cell *matCellDef="let element"> {{element.Correo}} </td>
-        </ng-container>
-        <ng-container matColumnDef="Ciudad">
-            <th mat-header-cell *matHeaderCellDef> Ciudad </th>
-            <td mat-cell *matCellDef="let element"> {{element.Ciudad}} </td>
-        </ng-container>
-        <ng-container matColumnDef="FechaRegistro">
-            <th mat-header-cell *matHeaderCellDef> FechaRegistro </th>
-            <td mat-cell *matCellDef="let element"> {{element.FechaRegistro}} </td>
-        </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
+<section class="surface users-card">
+  <div class="toolbar"><div class="search"><mat-icon>search</mat-icon><input #query type="search" placeholder="Buscar por nombre, correo o ciudad..." (input)="search(query.value)" aria-label="Buscar usuarios"></div><span>{{ dataSource.filteredData.length }} usuarios</span></div>
+  <div class="loading" *ngIf="loading"><mat-spinner diameter="38"></mat-spinner><span>Cargando directorio...</span></div>
+  <div class="table-scroll" [hidden]="loading || !dataSource.filteredData.length">
+    <table mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="Nombres"><th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th><td mat-cell *matCellDef="let user"><span class="user-cell"><span class="avatar">{{ user.Nombres.charAt(0).toUpperCase() }}</span><strong>{{ user.Nombres }}</strong></span></td></ng-container>
+      <ng-container matColumnDef="DocumentoIdentidad"><th mat-header-cell *matHeaderCellDef mat-sort-header>Documento</th><td mat-cell *matCellDef="let user">{{ user.DocumentoIdentidad }}</td></ng-container>
+      <ng-container matColumnDef="Correo"><th mat-header-cell *matHeaderCellDef mat-sort-header>Correo</th><td mat-cell *matCellDef="let user"><a [href]="'mailto:' + user.Correo">{{ user.Correo }}</a></td></ng-container>
+      <ng-container matColumnDef="Telefono"><th mat-header-cell *matHeaderCellDef>Teléfono</th><td mat-cell *matCellDef="let user">{{ user.Telefono }}</td></ng-container>
+      <ng-container matColumnDef="Ciudad"><th mat-header-cell *matHeaderCellDef mat-sort-header>Ciudad</th><td mat-cell *matCellDef="let user"><span class="location"><mat-icon>location_on</mat-icon>{{ user.Ciudad }}</span></td></ng-container>
+      <ng-container matColumnDef="FechaRegistro"><th mat-header-cell *matHeaderCellDef mat-sort-header>Registro</th><td mat-cell *matCellDef="let user">{{ user.FechaRegistro | date:'dd/MM/yyyy' }}</td></ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr><tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-    <mat-paginator [pageSizeOptions]="[5, 10, 20]"
-                showFirstLastButtons 
-                aria-label="Select page of periodic elements">
-    </mat-paginator>
-    <br>
-    <div align="center">
-        <button mat-raised-button class="btn botonMargen" (click)="openDialogU()">Agregar</button>
-        <button mat-raised-button class="btn botonMargen"> Modificar </button>
-        <button mat-raised-button class="btn botonMargen"> Eliminar </button>
-    </div>
-</div>
+  </div>
+  <div class="empty-state" *ngIf="!loading && !dataSource.filteredData.length"><mat-icon>group_off</mat-icon><h3>No encontramos usuarios</h3><p>Prueba con otro término de búsqueda.</p></div>
+  <mat-paginator [pageSizeOptions]="[8, 15, 30]" [pageSize]="8" showFirstLastButtons></mat-paginator>
+</section>

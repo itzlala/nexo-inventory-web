@@ -1,20 +1,12 @@
-import { AfterViewInit, Component, OnInit, ViewChild, inject, Inject } from '@angular/core';
-import * as Notiflix from 'notiflix';
-import { map, Observable } from 'rxjs';
-import { InventarioApiService } from 'src/app/services/inventario-api.service';
-import { MatTableDataSource } from '@angular/material/table';
-import { Inventario } from '../interfaces/inventario';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
-import { ThisReceiver } from '@angular/compiler';
-import { inventario } from 'src/app/models/inventario.inventario';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatDialog, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
+import { InventarioApiService } from 'src/app/services/inventario-api.service';
 import { AddEditInventarioComponent } from '../add-edit-inventario/add-edit-inventario.component';
-import { Router } from '@angular/router';
-
-
-
+import { Inventario } from '../interfaces/inventario';
 
 @Component({
   selector: 'app-show-inventario',
@@ -22,74 +14,58 @@ import { Router } from '@angular/router';
   styleUrls: ['./show-inventario.component.css']
 })
 export class ShowInventarioComponent implements OnInit, AfterViewInit {
-  animal: any;
-  name: any;
-  
-  displayedColumns: string[] = ['IdInventario','Folio','Tipo','Estatus','DescFis','DescTec','Marca','Modelo','NomProd','Nserie','Costo','Lugar','Asignacion','Observaciones','FechaRegistro'];
-  ELEMENT_DATAINV!: Observable<Inventario[]>;
-  inventarioLista!:Observable<any[]>;
-  inventarioLista1: any=[];
-  public inventario = new inventario(0,0,"","","","","","","","","","","","","",new Date);
-  
+  displayedColumns = ['Folio', 'NomProd', 'Tipo', 'Estatus', 'Marca', 'Lugar', 'Asignacion', 'Costo', 'acciones'];
   dataSource = new MatTableDataSource<Inventario>([]);
+  loading = true;
+  selectedStatus = '';
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  // Map to display data associate with foreign keys
-  usuarioMap:Map<number, string> = new Map()
-
-
-  constructor(
-    private router : Router,
-    private service: InventarioApiService,
-    public dialog: MatDialog
-    ) { }
-
-    openDialogI(): void {
-      const dialogRef = this.dialog.open(AddEditInventarioComponent, {
-        width: '250px',
-        data: {name: this.name, animal: this.animal},
-      });
-  
-      dialogRef.afterClosed().subscribe(result => {
-        console.log('The dialog was closed');
-        this.animal = result;
-      });
-    }
-
-  ngOnInit(): void {
-    this.recargaPagina();
-    this.mostrarInventario();
+  constructor(private service: InventarioApiService, private dialog: MatDialog, private snackBar: MatSnackBar) {
+    this.dataSource.filterPredicate = (item, filterValue) => {
+      const filter = JSON.parse(filterValue || '{}');
+      const content = [item.Folio, item.NomProd, item.Tipo, item.Marca, item.Modelo, item.Nserie, item.Lugar, item.Asignacion].join(' ').toLowerCase();
+      return (!filter.term || content.includes(filter.term)) && (!filter.status || item.Estatus === filter.status);
+    };
   }
 
-  ngAfterViewInit() {
+  ngOnInit(): void { this.loadInventory(); }
+  ngAfterViewInit(): void {
+    if (!this.paginator || !this.sort) return;
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.dataSource.paginator._intl.itemsPerPageLabel = 'Elementos por pagina';
+    this.paginator._intl.itemsPerPageLabel = 'Activos por página';
   }
 
-  mostrarInventario()
-  {
-    //this.inventarioLista$ = this.service.getInventarioList();
-    this.service.getInventarioList().subscribe(result => {
-      this.dataSource.data = result
-    }); 
+  loadInventory(): void {
+    this.loading = true;
+    this.service.getInventarioList().subscribe({
+      next: inventory => { this.dataSource.data = inventory; this.loading = false; },
+      error: () => { this.loading = false; this.snackBar.open('No se pudo cargar el inventario.', 'Cerrar', { duration: 4000 }); }
+    });
   }
 
-  redirigeAlHome()
-  {
-    this.router.navigate(["home"])
+  applySearch(value: string): void { this.applyFilter(value.trim().toLowerCase(), this.selectedStatus); }
+  filterStatus(status: string): void { this.selectedStatus = status; this.applyFilter(this.currentTerm, status); }
+  get currentTerm(): string { try { return JSON.parse(this.dataSource.filter || '{}').term || ''; } catch { return ''; } }
+  get statuses(): string[] { return [...new Set(this.dataSource.data.map(item => item.Estatus).filter(Boolean))].sort(); }
+
+  openDialog(item?: Inventario): void {
+    this.dialog.open(AddEditInventarioComponent, { width: '760px', maxWidth: '95vw', data: item ? { ...item } : null }).afterClosed().subscribe(saved => {
+      if (saved) this.loadInventory();
+    });
   }
 
-  insertarDatos()
-  {
-
-  }
-  recargaPagina()
-  {
-    Notiflix.Loading.circle();
-    Notiflix.Loading.remove(1000);
+  delete(item: Inventario): void {
+    if (!confirm(`¿Eliminar el activo ${item.Folio}? Esta acción no se puede deshacer.`)) return;
+    this.service.deleteInventario(item.IdInventario).subscribe({
+      next: () => { this.snackBar.open('Activo eliminado.', 'Cerrar', { duration: 3000 }); this.loadInventory(); },
+      error: () => this.snackBar.open('No se pudo eliminar el activo.', 'Cerrar', { duration: 4000 })
+    });
   }
 
-
+  private applyFilter(term: string, status: string): void {
+    this.dataSource.filter = JSON.stringify({ term, status });
+    this.dataSource.paginator?.firstPage();
+  }
 }

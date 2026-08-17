@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap, first, throwError } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Usuario } from '../models/usuario.model';
-import { Router } from '@angular/router';
-import { catchError, map } from 'rxjs';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Notify } from 'notiflix';
 import { Usuarios } from '../inventario/interfaces/usuarios';
 
 @Injectable({
@@ -13,7 +9,7 @@ import { Usuarios } from '../inventario/interfaces/usuarios';
 })
 export class UsuarioService {
 
-  readonly inventarioAPIUrl = "https://localhost:44319/api";
+  readonly inventarioAPIUrl = environment.apiUrl;
 
   constructor(
     public http: HttpClient
@@ -28,8 +24,8 @@ export class UsuarioService {
     return this.http.post(this.inventarioAPIUrl + '/Usuario', data);
     }
 
-    updateUsuario(id:number|string, data:any) {
-    return this.http.put(this.inventarioAPIUrl + `/Usuario/${id}`, data);
+    updateUsuario(data: Usuarios) {
+    return this.http.put(this.inventarioAPIUrl + '/Usuario', data);
     }
 
     deleteUsuario(id:number|string) {
