@@ -2,22 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Inventario } from '../inventario/interfaces/inventario';
-
-export interface Cuenta{
-  usuario: "",
-  password: ""
-}
-
-export interface Response{
-  cuentas: [Cuenta]
-}
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InventarioApiService {
   
-  readonly inventarioAPIUrl = "https://localhost:44319/api";
+  readonly inventarioAPIUrl = environment.apiUrl;
   
   constructor(private http:HttpClient) {
   
@@ -32,8 +24,8 @@ export class InventarioApiService {
   return this.http.post(this.inventarioAPIUrl + '/Inventario', data);
   }
 
-  updateInventario(id:number|string, data:any) {
-  return this.http.put(this.inventarioAPIUrl + `/Inventario/${id}`, data);
+  updateInventario(data: Inventario) {
+  return this.http.put(this.inventarioAPIUrl + '/Inventario', data);
   }
 
   deleteInventario(id:number|string) {
@@ -56,24 +48,6 @@ export class InventarioApiService {
 
   deleteUsuario(id:number|string) {
   return this.http.delete(this.inventarioAPIUrl + `/Usuario/${id}`);
-  }
-
-// metodos para las cuentas
-
-  getCuentaList() {
-  return this.http.get<Response>(this.inventarioAPIUrl + '/Cuenta');
-  }
-
-  addCuenta(data:any){
-  return this.http.post(this.inventarioAPIUrl + '/Cuenta', data);
-  }
-
-  updateCuenta(id:number|string, data:any) {
-  return this.http.put(this.inventarioAPIUrl + `/Cuenta/${id}`, data);
-  }
-
-  deleteCuenta(id:number|string) {
-  return this.http.delete(this.inventarioAPIUrl + `/Cuenta/${id}`);
   }
 
   // Estados

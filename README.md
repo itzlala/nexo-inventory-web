@@ -1,27 +1,70 @@
-# FrontInventario
+# Nexo Inventory — Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.6.
+Interfaz web para administrar activos, responsables y ubicaciones de una empresa. El proyecto nació como trabajo universitario y fue renovado como un caso de estudio full-stack orientado a portafolio.
 
-## Development server
+> Este repositorio contiene el cliente Angular. La API se encuentra en [Back-ProyectoWebApi](https://github.com/itzlala/Back-ProyectoWebApi).
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Funcionalidades
 
-## Code scaffolding
+- Inicio de sesión mediante JWT y cierre automático ante sesiones inválidas.
+- Rutas privadas protegidas con `AuthGuard`.
+- Dashboard con indicadores de disponibilidad, asignación y mantenimiento.
+- Consulta, búsqueda, filtrado y paginación del inventario.
+- Alta, edición y eliminación de activos.
+- Directorio de usuarios con búsqueda y ordenamiento.
+- Estados vacíos, mensajes de error y diseño responsive.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Tecnologías
 
-## Build
+| Área | Tecnología |
+| --- | --- |
+| Framework | Angular 14 y TypeScript |
+| UI | Angular Material y CSS responsive |
+| Datos | HttpClient y RxJS |
+| Seguridad | JWT, interceptor HTTP y session storage |
+| Pruebas | Jasmine y Karma |
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Arquitectura
 
-## Running unit tests
+```mermaid
+flowchart LR
+    U[Usuario] --> A[Aplicación Angular]
+    A --> G[Guard de autenticación]
+    G --> D[Dashboard]
+    G --> I[Inventario]
+    G --> P[Usuarios]
+    A --> X[Interceptor JWT]
+    X --> API[ASP.NET Web API]
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Ejecución local
 
-## Running end-to-end tests
+Requisitos: Node.js 16 o superior, npm y la API ejecutándose en `https://localhost:44319`.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```bash
+npm ci
+npm start
+```
 
-## Further help
+Abre `http://localhost:4200`. Para generar una compilación optimizada:
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```bash
+npm run build
+```
+
+La URL del backend se configura en `src/environments/environment.ts`; producción utiliza `/api` para permitir que frontend y API se publiquen bajo el mismo dominio.
+
+## Flujo de autenticación
+
+1. El formulario envía las credenciales únicamente a `POST /api/auth/login`.
+2. La API valida la cuenta y devuelve un JWT firmado con expiración.
+3. El cliente mantiene el token durante la pestaña activa y lo adjunta a cada solicitud.
+4. Las respuestas `401` eliminan la sesión y regresan al acceso.
+
+## Proyecto relacionado
+
+- [API y documentación del backend](https://github.com/itzlala/Back-ProyectoWebApi)
+
+## Autor
+
+Proyecto académico y de portafolio desarrollado por [itzlala](https://github.com/itzlala).

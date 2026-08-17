@@ -1,0 +1,30 @@
+<div class="app-layout">
+  <div class="mobile-backdrop" *ngIf="sidebarOpen" (click)="closeSidebar()"></div>
+  <aside class="sidebar" [class.open]="sidebarOpen">
+    <a class="brand" routerLink="/dashboard" (click)="closeSidebar()">
+      <span class="brand-mark"><mat-icon>inventory_2</mat-icon></span>
+      <span><strong>Nexo</strong><small>Inventory</small></span>
+    </a>
+
+    <p class="nav-label">OPERACIÓN</p>
+    <nav aria-label="Navegación principal">
+      <a routerLink="/dashboard" routerLinkActive="active" (click)="closeSidebar()"><mat-icon>space_dashboard</mat-icon>Resumen</a>
+      <a routerLink="/inventario" routerLinkActive="active" (click)="closeSidebar()"><mat-icon>category</mat-icon>Inventario</a>
+      <a routerLink="/usuarios" routerLinkActive="active" (click)="closeSidebar()"><mat-icon>group</mat-icon>Usuarios</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="avatar">{{ auth.usuario.charAt(0).toUpperCase() }}</div>
+      <div><strong>{{ auth.usuario }}</strong><small>{{ auth.rol }}</small></div>
+      <button mat-icon-button aria-label="Cerrar sesión" matTooltip="Cerrar sesión" (click)="auth.logout()"><mat-icon>logout</mat-icon></button>
+    </div>
+  </aside>
+
+  <section class="workspace">
+    <header class="mobile-header">
+      <button mat-icon-button aria-label="Abrir menú" (click)="sidebarOpen = true"><mat-icon>menu</mat-icon></button>
+      <strong>Nexo Inventory</strong>
+    </header>
+    <main><router-outlet></router-outlet></main>
+  </section>
+</div>

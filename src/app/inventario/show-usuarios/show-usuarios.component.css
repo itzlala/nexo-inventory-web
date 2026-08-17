@@ -1,16 +1,7 @@
-table{
-    width: 100%;
-    
-}
-
-.title{
-    padding: 30px;
-    background: rgb(63,94,251);
-    background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
-    text-align: center;
-    color: white;
-}
-
-.botonMargen{
-    margin-right: 10px;
-}
+.eyebrow { margin-bottom: 8px !important; color: var(--brand) !important; font-size: .7rem; letter-spacing: .15em; font-weight: 700; }
+.users-card { overflow: hidden; }.toolbar { min-height: 80px; padding: 16px 22px; display: flex; align-items: center; gap: 18px; border-bottom: 1px solid var(--line); }.toolbar > span { margin-left: auto; color: var(--muted); font-size: .82rem; }
+.search { height: 46px; width: min(100%, 470px); display: flex; align-items: center; gap: 9px; padding: 0 14px; border: 1px solid var(--line); border-radius: 12px; background: #f9fafc; }.search mat-icon { color: #8894a8; }.search input { width: 100%; border: 0; outline: 0; background: transparent; }
+.table-scroll { overflow-x: auto; } table { width: 100%; min-width: 900px; } th.mat-header-cell { color: #748096; font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; background: #fafbfc; }td.mat-cell, th.mat-header-cell { padding: 13px 16px; border-color: var(--line); } td.mat-cell { color: #465269; }
+.user-cell { display: flex; align-items: center; gap: 11px; }.avatar { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 11px; color: #2457e6; background: #e8eeff; font-weight: 700; }.location { display: flex; align-items: center; gap: 4px; }.location mat-icon { width: 17px; height: 17px; font-size: 17px; color: #9aa4b5; }td a { color: var(--brand); text-decoration: none; }
+.loading { min-height: 300px; display: flex; flex-direction: column; gap: 14px; align-items: center; justify-content: center; color: var(--muted); }mat-paginator { border-top: 1px solid var(--line); }
+@media (max-width: 650px) { .toolbar { align-items: stretch; flex-direction: column; }.toolbar > span { margin-left: 0; }.search { width: 100%; } }

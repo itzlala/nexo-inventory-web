@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
-import * as Notiflix from 'notiflix';
-import { map, Observable } from 'rxjs';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { Usuarios } from '../interfaces/usuarios';
 
@@ -12,55 +11,31 @@ import { Usuarios } from '../interfaces/usuarios';
   templateUrl: './show-usuarios.component.html',
   styleUrls: ['./show-usuarios.component.css']
 })
-export class ShowUsuariosComponent implements OnInit {
-
-  displayedColumns: string[] = ['IdUsuario','DocumentoIdentidad','Nombres','Telefono','Correo','Ciudad','FechaRegistro'];
-  ELEMENT_DATAUSU!: Observable<Usuarios[]>;
-  usuarioLista$!:Observable<any[]>;
-  usuarioLista:any=[];
-
+export class ShowUsuariosComponent implements OnInit, AfterViewInit {
+  displayedColumns = ['Nombres', 'DocumentoIdentidad', 'Correo', 'Telefono', 'Ciudad', 'FechaRegistro'];
   dataSource = new MatTableDataSource<Usuarios>([]);
+  loading = true;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  // Map to display data associate with foreign keys
-  usuarioMap:Map<number, string> = new Map()
-  
-  constructor(
-    private service: UsuarioService,
-    private router : Router
-    ) { }
+  @ViewChild(MatSort) sort!: MatSort;
+
+  constructor(private service: UsuarioService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
-    this.recargaPagina();
-    this.mostrarUsuarios();
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.paginator._intl.itemsPerPageLabel = 'Elementos por pagina';
-  }
-
-  mostrarUsuarios()
-  {
-    //this.ELEMENT_DATAUSU = this.service.getUsuarioList();
-    //this.usuarioLista$ = this.service.getUsuarioList();
-    this.service.getUsuarioList().subscribe(result => {
-      this.dataSource.data = result
+    this.service.getUsuarioList().subscribe({
+      next: users => { this.dataSource.data = users; this.loading = false; },
+      error: () => { this.loading = false; this.snackBar.open('No se pudo cargar el directorio.', 'Cerrar', { duration: 4000 }); }
     });
   }
-  redirigeAlHome()
-  {
-    this.router.navigate(["home"])
+
+  ngAfterViewInit(): void {
+    if (!this.paginator || !this.sort) return;
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.paginator._intl.itemsPerPageLabel = 'Usuarios por página';
   }
 
-  openDialogU()
-  {
-    
+  search(value: string): void {
+    this.dataSource.filter = value.trim().toLowerCase();
+    this.dataSource.paginator?.firstPage();
   }
-
-  recargaPagina()
-  {
-    Notiflix.Loading.circle();
-    Notiflix.Loading.remove(1000);
-  }
-
 }

@@ -7,13 +7,23 @@ import { ShowUsuariosComponent } from './inventario/show-usuarios/show-usuarios.
 import { LoginComponent } from './inventario/login/login.component';
 import { PageNotFoundComponentComponent } from './inventario/page-not-found-component/page-not-found-component.component';
 import { PanelOpcionesComponent } from './inventario/panel-opciones/panel-opciones.component';
+import { LayoutComponent } from './layout/layout.component';
+import { AuthGuard } from './auth/auth.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'home', component: PanelOpcionesComponent },
-  { path: 'inventario', component: ShowInventarioComponent },
-  { path: 'usuarios', component: ShowUsuariosComponent },
+  {
+    path: '',
+    component: LayoutComponent,
+    canActivate: [AuthGuard],
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: PanelOpcionesComponent },
+      { path: 'home', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'inventario', component: ShowInventarioComponent },
+      { path: 'usuarios', component: ShowUsuariosComponent }
+    ]
+  },
   { path: '**', component: PageNotFoundComponentComponent }
 ];
 export const APP_ROUTES = RouterModule.forRoot(routes, { useHash: true });
