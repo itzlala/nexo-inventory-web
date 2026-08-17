@@ -2,7 +2,7 @@
 
 Interfaz web para administrar activos, responsables y ubicaciones de una empresa. El proyecto nació como trabajo universitario y fue renovado como un caso de estudio full-stack orientado a portafolio.
 
-> Este repositorio contiene el cliente Angular. La API se encuentra en [Back-ProyectoWebApi](https://github.com/itzlala/Back-ProyectoWebApi).
+> Este repositorio contiene el cliente Angular. La API se encuentra en [nexo-inventory-api](https://github.com/itzlala/nexo-inventory-api).
 
 ## Funcionalidades
 
@@ -63,7 +63,7 @@ La URL del backend se configura en `src/environments/environment.ts`; producció
 
 ## Proyecto relacionado
 
-- [API y documentación del backend](https://github.com/itzlala/Back-ProyectoWebApi)
+- [API y documentación del backend](https://github.com/itzlala/nexo-inventory-api)
 
 ## Autor
 
